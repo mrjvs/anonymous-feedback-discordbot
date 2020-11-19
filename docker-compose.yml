@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  bot:
+    build: ../
+    container_name: feedbackbot
+    links:
+      - dynamodb
+    depends_on:
+      - dynamodb
+    env_file:
+      - ./.env
+    restart: unless-stopped
+
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb
+    restart: unless-stopped

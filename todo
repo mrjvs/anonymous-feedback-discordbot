@@ -1,3 +1,2 @@
 1. message queue so feedback channel logs dont mangle
 2. dynamoDB logging
-3. docker compose file
