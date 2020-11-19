@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  bot:
+    build: ./
+    container_name: feedbackbot
+    env_file:
+      - ./.env
+    restart: unless-stopped

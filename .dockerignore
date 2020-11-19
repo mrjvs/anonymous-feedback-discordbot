@@ -2,6 +2,7 @@ node_modules
 .env
 README.md
 docker-compose.yml
+docker-compose-no-db.yml
 example.env
 todo
 .git

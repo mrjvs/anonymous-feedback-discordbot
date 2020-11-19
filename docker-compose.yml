@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   bot:
-    build: ../
+    build: ./
     container_name: feedbackbot
     links:
       - dynamodb
