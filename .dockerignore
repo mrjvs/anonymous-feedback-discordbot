@@ -2,3 +2,7 @@ node_modules
 .env
 README.md
 docker-compose.yml
+example.env
+todo
+.git
+.gitignore
