@@ -2,6 +2,7 @@ const { setUserBusy, setUserNotBusy } = require('../utils/busy')
 const { startButtonPrompt, PromptTimeout } = require('../utils/prompt/button')
 const { startMessagePrompt, PromptCancel } = require('../utils/prompt/message')
 const { saveFeedback } = require("../utils/db")
+const { text } = require("../utils/config")
 
 const yearButtonTimeout = 20000; // in milliseconds
 const feedbackTimeout = 20000; // in milliseconds
@@ -19,7 +20,69 @@ const confirmButtons = [
 ]
 
 function sendInitialMessage(channel) {
-	return channel.send('hi there!');
+	return channel.send({
+		embed: {
+      title: text.feedbackStart.title,
+      description: text.feedbackStart.text,
+      color: text.colorInfo
+		}
+	});
+}
+
+const yearEmbed = {
+	embed: {
+		title: text.yearPrompt.title,
+		description: text.yearPrompt.text,
+		color: text.colorInfo
+	}
+}
+
+const feedbackEmbed = {
+	embed: {
+		title: text.feedbackPrompt.title,
+		description: text.feedbackPrompt.text,
+		color: text.colorInfo
+	}
+}
+
+const confirmEmbed = {
+	embed: {
+		title: text.confirmPrompt.title,
+		description: text.confirmPrompt.text,
+		color: text.colorInfo
+	}
+}
+
+const successEmbed = {
+	embed: {
+		title: text.feedbackSuccess.title,
+		description: text.feedbackSuccess.text,
+		color: text.colorSuccess
+	}
+}
+
+const errorEmbed = {
+	embed: {
+		title: text.feedbackError.title,
+		description: text.feedbackError.text,
+		color: text.colorError
+	}
+}
+
+const cancelEmbed = {
+	embed: {
+		title: text.feedbackCancel.title,
+		description: text.feedbackCancel.text,
+		color: text.colorError
+	}
+}
+
+const timeoutEmbed = {
+	embed: {
+		title: text.feedbackTimeout.title,
+		description: text.feedbackTimeout.text,
+		color: text.colorError
+	}
 }
 
 module.exports = {
@@ -34,11 +97,23 @@ module.exports = {
 			try {
 				await sendInitialMessage(channel)
 			} catch (err) {
-				msg.channel.send('Whoops, I can\'t DM you it seems, please enable your DM\'s')
+				msg.channel.send({
+					embed: {
+						title: text.feedbackCantDM.title,
+      			description: text.feedbackCantDM.text,
+						color: text.colorError
+					}
+				})
 				return
 			}
 
-			msg.channel.send('Hey there, let\'s continue in DM\'s!')
+			msg.channel.send({
+				embed: {
+					title: text.feedbackContinueDM.title,
+      		description: text.feedbackContinueDM.text,
+					color: text.colorInfo
+				}
+			})
 		} else {
 			await sendInitialMessage(channel)
 		}
@@ -48,18 +123,18 @@ module.exports = {
 			setUserBusy(msg.author.id, channel.id);
 
 			// get year
-			const yearIndex = await startButtonPrompt(channel, msg.author, 'button collector', yearButtons, yearButtonTimeout)
+			const yearIndex = await startButtonPrompt(channel, msg.author, yearEmbed, yearButtons, yearButtonTimeout)
 			const year = yearButtons[yearIndex].value;
 
 			let confirmed = 'new'
 			let feedbacks = []
 			while (confirmed === 'new') {
 				// get feedback
-				const feedback = await startMessagePrompt(channel, msg.author, 'message collector', feedbackTimeout)
+				const feedback = await startMessagePrompt(channel, msg.author, feedbackEmbed, feedbackTimeout)
 				feedbacks.push(feedback.content);
 				
 				// confirm prompt
-				const confirmIndex = await startButtonPrompt(channel, msg.author, 'Do you want to confirm, or add another message', confirmButtons, confirmTimeout)
+				const confirmIndex = await startButtonPrompt(channel, msg.author, confirmEmbed, confirmButtons, confirmTimeout)
 				confirmed = confirmButtons[confirmIndex].value;
 				if (confirmed == 'cancel') throw new PromptCancel();
 			}
@@ -72,18 +147,18 @@ module.exports = {
 			if (!success) throw new Error("savingFailed")
 
 			// success
-			await channel.send('Thank you for your feedback, it has been recorded anonymously!');
+			await channel.send(successEmbed);
 		} catch (err) {
 			if (err instanceof PromptTimeout) {
-				channel.send("Whoops, you waited too long. we've closed the prompt for you.")
+				channel.send(timeoutEmbed)
 				return
 			}
 			if (err instanceof PromptCancel) {
-				channel.send("Feedback cancelled. have a nice day :)")
+				channel.send(cancelEmbed)
 				return
 			}
 			console.error(err);
-			channel.send("whoops, something went wrong, please try again later");
+			channel.send(errorEmbed);
 		} finally {
 			setUserNotBusy(msg.author.id, channel.id);
 		}

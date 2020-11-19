@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const { token, prefix } = require('./utils/config')
+const { token, prefix, text } = require('./utils/config')
 const { isUserBusy } = require('./utils/busy')
 const { setup } = require('./utils/db')
 const { commands } = require('./commands')
@@ -39,6 +39,13 @@ client.on('message', async (msg) => {
 					await res;
 			} catch (err) {
 				console.error(`Error running command ${cmd.command}:`, err)
+				msg.channel.send({
+					embed: {
+						title: text.genericError.title,
+						description: text.genericError.text,
+						color: text.colorError
+					}
+				})
 			}
 			break;
 		}

@@ -15,7 +15,13 @@ async function saveFeedbackChannel(feedback) {
 	}
 	const splittedFeedback = feedback.feedback.match(/(.|\n){1,1900}/g);
 
-	await channel.send(`**new feedback**\nYear: ${feedback.year}\nFeedback:`, sendOptions)
+	await channel.send({
+		embed: {
+			title: 'New feedback',
+			description: `**Year:** ${feedback.year}\nRest of feedback can be read below`
+		},
+		...sendOptions
+	})
 	for (const chunk of splittedFeedback) {
 		await channel.send(chunk, sendOptions)
 	}
@@ -42,7 +48,10 @@ async function saveFeedback(feedback) {
 		console.error("Error saving feedback to database", err);
 	}
 
-	return channelWorked || dbWorked;
+	const oneSuccess = channelWorked || dbWorked
+	if (oneSuccess)
+		console.log("Successfully saved some feedback")
+	return oneSuccess;
 }
 
 module.exports = {
