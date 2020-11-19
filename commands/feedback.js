@@ -2,11 +2,11 @@ const { setUserBusy, setUserNotBusy } = require('../utils/busy')
 const { startButtonPrompt, PromptTimeout } = require('../utils/prompt/button')
 const { startMessagePrompt, PromptCancel } = require('../utils/prompt/message')
 const { saveFeedback } = require("../utils/db")
-const { text } = require("../utils/config")
+const { text, timeouts } = require("../utils/config")
 
-const yearButtonTimeout = 20000; // in milliseconds
-const feedbackTimeout = 20000; // in milliseconds
-const confirmTimeout = 20000; // in milliseconds
+const yearButtonTimeout = timeouts.feedbackYear;
+const feedbackTimeout = timeouts.feedbackMessage;
+const confirmTimeout = timeouts.feedbackConfirm;
 const yearButtons = [
 	{ type: 'default', emoji: '4️⃣', value: 'year4' },
 	{ type: 'default', emoji: '5️⃣', value: 'year5' },

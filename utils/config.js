@@ -64,6 +64,11 @@ module.exports = {
 		colorSuccess: 3792980,
 		colorError: 14830411
 	},
+	timeouts: { // all in milliseconds
+		feedbackYear: 20000,
+		feedbackMessage: 20000,
+		feedbackConfirm: 20000,
+	},
 	token: process.env.DISCORD_TOKEN,
 	prefix: process.env.PREFIX,
 	guildID: process.env.GUILD_ID,
