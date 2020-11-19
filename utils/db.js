@@ -1,4 +1,6 @@
 const config = require("./config")
+const { PromiseQueue } = require("./queue")
+const feedbackSendQueue = new PromiseQueue();
 let client;
 
 async function setup(c) {
@@ -15,16 +17,18 @@ async function saveFeedbackChannel(feedback) {
 	}
 	const splittedFeedback = feedback.feedback.match(/(.|\n){1,1900}/g);
 
-	await channel.send({
-		embed: {
-			title: 'New feedback',
-			description: `**Year:** ${feedback.year}\nRest of feedback can be read below`
-		},
-		...sendOptions
+	await feedbackSendQueue.add(async () => {
+		await channel.send({
+			embed: {
+				title: 'New feedback',
+				description: `**Year:** ${feedback.year}\nRest of feedback can be read below`
+			},
+			...sendOptions
+		})
+		for (const chunk of splittedFeedback) {
+			await channel.send(chunk, sendOptions)
+		}
 	})
-	for (const chunk of splittedFeedback) {
-		await channel.send(chunk, sendOptions)
-	}
 	return true;
 }
 
