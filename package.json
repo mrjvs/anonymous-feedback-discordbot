@@ -1,0 +1,26 @@
+{
+  "name": "anonymous-feedback-discordbot",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Anonymous feedback discord bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrjvs/anonymous-feedback-discordbot.git"
+  },
+  "author": "mrjvs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrjvs/anonymous-feedback-discordbot/issues"
+  },
+  "homepage": "https://github.com/mrjvs/anonymous-feedback-discordbot#readme",
+  "dependencies": {
+    "discord.js": "^12.4.1",
+    "dotenv": "^8.2.0",
+    "dynamodb": "^1.3.0"
+  }
+}
