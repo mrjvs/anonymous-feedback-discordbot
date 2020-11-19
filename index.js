@@ -3,6 +3,7 @@ const client = new Discord.Client();
 
 const { token, prefix } = require('./utils/config')
 const { isUserBusy } = require('./utils/busy')
+const { setup } = require('./utils/db')
 const { commands } = require('./commands')
 
 client.on('ready', () => {
@@ -43,7 +44,9 @@ client.on('message', async (msg) => {
 		}
 	}
 });
-
 // client.on('messageReactionAdd', (reaction) => console.log(reaction.emoji.name))
+
+// setup database
+setup(client)
 
 client.login(token);
